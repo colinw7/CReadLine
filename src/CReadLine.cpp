@@ -2,9 +2,6 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-using std::string;
-using std::vector;
-
 CReadLine *CReadLine::current_ = NULL;
 
 CReadLine::
@@ -64,7 +61,7 @@ disableTimoutHook()
   rl_event_hook = NULL;
 }
 
-string
+std::string
 CReadLine::
 readLine()
 {
@@ -86,14 +83,14 @@ readLine()
 
 void
 CReadLine::
-setPrompt(const string &prompt)
+setPrompt(const std::string &prompt)
 {
   prompt_ = prompt;
 }
 
 void
 CReadLine::
-setName(const string &name)
+setName(const std::string &name)
 {
   name_ = name;
 
@@ -102,7 +99,7 @@ setName(const string &name)
 
 bool
 CReadLine::
-getPrevCommand(string &line)
+getPrevCommand(std::string &line)
 {
   if (history_ != NULL)
     return history_->getPrevCommand(line);
@@ -112,7 +109,7 @@ getPrevCommand(string &line)
 
 bool
 CReadLine::
-getNextCommand(string &line)
+getNextCommand(std::string &line)
 {
   if (history_ != NULL)
     return history_->getNextCommand(line);
@@ -127,9 +124,9 @@ rlCompleteLine(int, int)
   if (rl_point != rl_end)
     return 0;
 
-  string line = current_->getBuffer();
+  std::string line = current_->getBuffer();
 
-  string line1;
+  std::string line1;
 
   if (current_->completeLine(line, line1))
     current_->setBuffer(line + line1);
@@ -147,7 +144,7 @@ rlShowComplete(int, int)
     rl_line_buffer[rl_end] = '\0';
   }
   else {
-    string line = current_->getBuffer();
+    std::string line = current_->getBuffer();
 
     if (current_->showComplete(line))
       rl_forced_update_display();
@@ -160,7 +157,7 @@ int
 CReadLine::
 rlPrevCommand(int, int)
 {
-  string line;
+  std::string line;
 
   if (current_->getPrevCommand(line))
     current_->setBuffer(line);
@@ -172,7 +169,7 @@ int
 CReadLine::
 rlNextCommand(int, int)
 {
-  string line;
+  std::string line;
 
   if (! current_->getNextCommand(line))
     line = "";
@@ -191,7 +188,7 @@ rlEventHook()
   return 1;
 }
 
-string
+std::string
 CReadLine::
 getBuffer() const
 {
@@ -200,7 +197,7 @@ getBuffer() const
 
 void
 CReadLine::
-setBuffer(const string &buffer)
+setBuffer(const std::string &buffer)
 {
   rl_extend_line_buffer(buffer.size() + 1);
 
@@ -213,7 +210,7 @@ setBuffer(const string &buffer)
 
 void
 CReadLine::
-addHistory(const string &line)
+addHistory(const std::string &line)
 {
   if (history_ == NULL)
     history_ = new CHistory;
@@ -223,7 +220,7 @@ addHistory(const string &line)
 
 void
 CReadLine::
-getHistoryEntries(vector<CReadLineHistoryEntry> &entries)
+getHistoryEntries(std::vector<CReadLineHistoryEntry> &entries)
 {
   HIST_ENTRY **hist_entries = history_list();
 
