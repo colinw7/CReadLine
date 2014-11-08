@@ -28,8 +28,8 @@ class CReadLine {
 
   void setAutoHistory(bool flag);
 
-  void enableTimoutHook();
-  void disableTimoutHook();
+  void enableTimeoutHook(int t=100);
+  void disableTimeoutHook();
 
   std::string readLine();
 

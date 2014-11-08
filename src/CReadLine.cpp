@@ -49,14 +49,16 @@ setAutoHistory(bool flag)
 
 void
 CReadLine::
-enableTimoutHook()
+enableTimeoutHook(int t)
 {
   rl_event_hook = rlEventHook;
+
+  rl_set_keyboard_input_timeout(t);
 }
 
 void
 CReadLine::
-disableTimoutHook()
+disableTimeoutHook()
 {
   rl_event_hook = NULL;
 }
