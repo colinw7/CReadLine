@@ -2,11 +2,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-CReadLine *CReadLine::current_ = NULL;
+CReadLine *CReadLine::current_ = 0;
 
 CReadLine::
 CReadLine() :
- prompt_("> "), name_("readline"), eof_(false), history_(NULL)
+ prompt_("> "), name_("readline"), eof_(false), autoHistory_(false)
 {
   rl_readline_name = name_.c_str();
 
@@ -39,12 +39,12 @@ void
 CReadLine::
 setAutoHistory(bool flag)
 {
-  delete history_;
+  autoHistory_ = flag;
 
   if (flag)
     history_ = new CHistory();
   else
-    history_ = NULL;
+    history_ = 0;
 }
 
 void
@@ -60,7 +60,7 @@ void
 CReadLine::
 disableTimeoutHook()
 {
-  rl_event_hook = NULL;
+  rl_event_hook = 0;
 }
 
 std::string
@@ -71,13 +71,13 @@ readLine()
 
   char *p = ::readline((char *) prompt_.c_str());
 
-  if (p == NULL) {
+  if (! p) {
     eof_ = true;
 
     return "";
   }
 
-  if (history_ != NULL)
+  if (autoHistory_)
     addHistory(p);
 
   return p;
@@ -103,7 +103,7 @@ bool
 CReadLine::
 getPrevCommand(std::string &line)
 {
-  if (history_ != NULL)
+  if (history_.isValid())
     return history_->getPrevCommand(line);
   else
     return false;
@@ -113,7 +113,7 @@ bool
 CReadLine::
 getNextCommand(std::string &line)
 {
-  if (history_ != NULL)
+  if (history_.isValid())
     return history_->getNextCommand(line);
   else
     return false;
@@ -214,7 +214,7 @@ void
 CReadLine::
 addHistory(const std::string &line)
 {
-  if (history_ == NULL)
+  if (! history_.isValid())
     history_ = new CHistory;
 
   history_->addCommand(line);
@@ -224,12 +224,25 @@ void
 CReadLine::
 getHistoryEntries(std::vector<CReadLineHistoryEntry> &entries)
 {
-  HIST_ENTRY **hist_entries = history_list();
+  if (history_.isValid()) {
+    std::vector<std::string> commands;
 
-  for (int i = 0; hist_entries != NULL && hist_entries[i] != NULL; i++) {
-    CReadLineHistoryEntry entry(i + history_base, hist_entries[i]->line);
+    history_->getCommands(commands);
 
-    entries.push_back(entry);
+    for (size_t i = 0; i < commands.size(); ++i) {
+      CReadLineHistoryEntry entry(i, commands[i]);
+
+      entries.push_back(entry);
+    }
+  }
+  else {
+    HIST_ENTRY **hist_entries = history_list();
+
+    for (int i = 0; hist_entries && hist_entries[i]; ++i) {
+      CReadLineHistoryEntry entry(i + history_base, hist_entries[i]->line);
+
+      entries.push_back(entry);
+    }
   }
 }
 

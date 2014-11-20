@@ -2,6 +2,7 @@
 #define CREADLINE_H
 
 #include <CHistory.h>
+#include <CAutoPtr.h>
 
 struct CReadLineHistoryEntry {
   int         line_num;
@@ -13,13 +14,8 @@ struct CReadLineHistoryEntry {
 };
 
 class CReadLine {
- private:
-  std::string  prompt_;
-  std::string  name_;
-  bool         eof_;
-  CHistory    *history_;
-
-  static CReadLine *current_;
+ public:
+  typedef std::vector<CReadLineHistoryEntry> HistoryEntries;
 
  public:
   CReadLine();
@@ -56,7 +52,7 @@ class CReadLine {
 
   void addHistory(const std::string &line);
 
-  void getHistoryEntries(std::vector<CReadLineHistoryEntry> &entries);
+  void getHistoryEntries(HistoryEntries &entries);
 
   void beep();
 
@@ -72,6 +68,15 @@ class CReadLine {
  private:
   CReadLine(const CReadLine &rhs);
   CReadLine &operator=(const CReadLine &rhs);
+
+ private:
+  static CReadLine *current_;
+
+  std::string        prompt_;
+  std::string        name_;
+  bool               eof_;
+  CAutoPtr<CHistory> history_;
+  bool               autoHistory_;
 };
 
 #endif
