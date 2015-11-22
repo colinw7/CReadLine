@@ -6,7 +6,7 @@ CReadLine *CReadLine::current_ = 0;
 
 CReadLine::
 CReadLine() :
- prompt_("> "), name_("readline"), eof_(false), autoHistory_(false)
+ prompt_("> "), name_("readline")
 {
   rl_readline_name = name_.c_str();
 
@@ -81,6 +81,19 @@ readLine()
     addHistory(p);
 
   return p;
+}
+
+std::string
+CReadLine::
+readLineInterruptable()
+{
+  interruptable_ = true;
+
+  std::string line = readLine();
+
+  interruptable_ = false;
+
+  return line;
 }
 
 void
@@ -262,4 +275,12 @@ interrupt()
   setBuffer("");
 
   rl_forced_update_display();
+}
+
+void
+CReadLine::
+doInterrupt()
+{
+  if (interruptable_)
+    rl_done = 1;
 }

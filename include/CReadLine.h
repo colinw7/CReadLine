@@ -29,6 +29,14 @@ class CReadLine {
 
   std::string readLine();
 
+  std::string readLineInterruptable();
+
+  void interrupt();
+
+  void doInterrupt();
+
+  bool isInterruptable() const { return interruptable_; }
+
   std::string getPrompt() const { return prompt_; }
 
   void setPrompt(const std::string &prompt);
@@ -56,14 +64,13 @@ class CReadLine {
 
   void beep();
 
-  void interrupt();
-
  private:
   static int rlCompleteLine(int count, int key);
   static int rlShowComplete(int count, int key);
   static int rlPrevCommand(int count, int key);
   static int rlNextCommand(int count, int key);
-  static int rlEventHook(void);
+  static int rlEventHook();
+  static int rlInputAvailableHook();
 
  private:
   CReadLine(const CReadLine &rhs);
@@ -74,9 +81,10 @@ class CReadLine {
 
   std::string        prompt_;
   std::string        name_;
-  bool               eof_;
+  bool               eof_         { false };
   CAutoPtr<CHistory> history_;
-  bool               autoHistory_;
+  bool               autoHistory_ { false };
+  bool               interruptable_ { false };
 };
 
 #endif
