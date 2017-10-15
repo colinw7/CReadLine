@@ -2,7 +2,7 @@
 #define CREADLINE_H
 
 #include <CHistory.h>
-#include <CAutoPtr.h>
+#include <memory>
 
 struct CReadLineHistoryEntry {
   int         line_num;
@@ -77,14 +77,16 @@ class CReadLine {
   CReadLine &operator=(const CReadLine &rhs);
 
  private:
+  typedef std::unique_ptr<CHistory> CHistoryP;
+
   static CReadLine *current_;
 
-  std::string        prompt_;
-  std::string        name_;
-  bool               eof_         { false };
-  CAutoPtr<CHistory> history_;
-  bool               autoHistory_ { false };
-  bool               interruptable_ { false };
+  std::string prompt_;
+  std::string name_;
+  bool        eof_         { false };
+  CHistoryP   history_;
+  bool        autoHistory_ { false };
+  bool        interruptable_ { false };
 };
 
 #endif

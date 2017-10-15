@@ -42,9 +42,9 @@ setAutoHistory(bool flag)
   autoHistory_ = flag;
 
   if (flag)
-    history_ = new CHistory();
+    history_ = CHistoryP(new CHistory());
   else
-    history_ = 0;
+    history_ = nullptr;
 }
 
 void
@@ -116,7 +116,7 @@ bool
 CReadLine::
 getPrevCommand(std::string &line)
 {
-  if (history_.isValid())
+  if (history_)
     return history_->getPrevCommand(line);
   else
     return false;
@@ -126,7 +126,7 @@ bool
 CReadLine::
 getNextCommand(std::string &line)
 {
-  if (history_.isValid())
+  if (history_)
     return history_->getNextCommand(line);
   else
     return false;
@@ -227,8 +227,8 @@ void
 CReadLine::
 addHistory(const std::string &line)
 {
-  if (! history_.isValid())
-    history_ = new CHistory;
+  if (! history_)
+    history_ = CHistoryP(new CHistory);
 
   history_->addCommand(line);
 }
@@ -237,7 +237,7 @@ void
 CReadLine::
 getHistoryEntries(std::vector<CReadLineHistoryEntry> &entries)
 {
-  if (history_.isValid()) {
+  if (history_) {
     std::vector<std::string> commands;
 
     history_->getCommands(commands);
