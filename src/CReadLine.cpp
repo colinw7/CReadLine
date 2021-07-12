@@ -2,7 +2,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-CReadLine *CReadLine::current_ = 0;
+CReadLine *CReadLine::current_ = nullptr;
 
 CReadLine::
 CReadLine() :
