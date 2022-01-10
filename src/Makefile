@@ -10,7 +10,12 @@ OBJ_DIR = ../obj
 LIB_DIR = ../lib
 BIN_DIR = ../bin
 
-all: $(LIB_DIR)/libCReadLine.a
+all: dirs $(LIB_DIR)/libCReadLine.a
+
+dirs:
+	@if [ ! -e ../obj ]; then mkdir ../obj; fi
+	@if [ ! -e ../lib ]; then mkdir ../lib; fi
+	@if [ ! -e ../bin ]; then mkdir ../bin; fi
 
 CPP_SRC = \
 CReadLine.cpp \
