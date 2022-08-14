@@ -12,25 +12,27 @@ CReadLine() :
 
   rl_catch_signals = 0;
 
-  rl_bind_key('\t'  , (int (*)(int, int)) rlCompleteLine);
-  rl_bind_key('\033', (int (*)(int, int)) rlCompleteLine);
+  using BindFn = int (*)(int, int);
 
-  rl_set_key("\\C-d", (int (*)(int, int)) rlShowComplete, rl_get_keymap());
+  rl_bind_key('\t'  , static_cast<BindFn>(rlCompleteLine));
+  rl_bind_key('\033', static_cast<BindFn>(rlCompleteLine));
+
+  rl_set_key("\\C-d", static_cast<BindFn>(rlShowComplete), rl_get_keymap());
 
 #ifdef OS_WIN
-  rl_set_key("\033[0A", (int (*)(int, int)) rlPrevCommand , rl_get_keymap());
-  rl_set_key("\033[0B", (int (*)(int, int)) rlNextCommand , rl_get_keymap());
+  rl_set_key("\033[0A", static_cast<BindFn>(rlPrevCommand), rl_get_keymap());
+  rl_set_key("\033[0B", static_cast<BindFn>(rlNextCommand), rl_get_keymap());
   rl_set_key("\033[0C", rl_named_function("forward-char" ), rl_get_keymap());
   rl_set_key("\033[0D", rl_named_function("backward-char"), rl_get_keymap());
 #endif
 
-  rl_set_key("\033[A", (int (*)(int, int)) rlPrevCommand , rl_get_keymap());
-  rl_set_key("\033[B", (int (*)(int, int)) rlNextCommand , rl_get_keymap());
+  rl_set_key("\033[A", static_cast<BindFn>(rlPrevCommand), rl_get_keymap());
+  rl_set_key("\033[B", static_cast<BindFn>(rlNextCommand), rl_get_keymap());
   rl_set_key("\033[C", rl_named_function("forward-char" ), rl_get_keymap());
   rl_set_key("\033[D", rl_named_function("backward-char"), rl_get_keymap());
 
-  rl_set_key("\033[OA", (int (*)(int, int)) rlPrevCommand , rl_get_keymap());
-  rl_set_key("\033[OB", (int (*)(int, int)) rlNextCommand , rl_get_keymap());
+  rl_set_key("\033[OA", static_cast<BindFn>(rlPrevCommand), rl_get_keymap());
+  rl_set_key("\033[OB", static_cast<BindFn>(rlNextCommand), rl_get_keymap());
   rl_set_key("\033[OC", rl_named_function("forward-char" ), rl_get_keymap());
   rl_set_key("\033[OD", rl_named_function("backward-char"), rl_get_keymap());
 }
@@ -69,7 +71,7 @@ readLine()
 {
   current_ = this;
 
-  char *p = ::readline((char *) prompt_.c_str());
+  char *p = ::readline(const_cast<char *>(prompt_.c_str()));
 
   if (! p) {
     eof_ = true;
@@ -214,11 +216,11 @@ void
 CReadLine::
 setBuffer(const std::string &buffer)
 {
-  rl_extend_line_buffer(buffer.size() + 1);
+  rl_extend_line_buffer(int(buffer.size() + 1));
 
   strcpy(rl_line_buffer, buffer.c_str());
 
-  rl_end = buffer.size();
+  rl_end = int(buffer.size());
 
   rl_point = rl_end;
 }
@@ -243,7 +245,7 @@ getHistoryEntries(std::vector<CReadLineHistoryEntry> &entries)
     history_->getCommands(commands);
 
     for (size_t i = 0; i < commands.size(); ++i) {
-      CReadLineHistoryEntry entry(i, commands[i]);
+      CReadLineHistoryEntry entry(int(i), commands[i]);
 
       entries.push_back(entry);
     }

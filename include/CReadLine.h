@@ -15,7 +15,7 @@ struct CReadLineHistoryEntry {
 
 class CReadLine {
  public:
-  typedef std::vector<CReadLineHistoryEntry> HistoryEntries;
+  using HistoryEntries = std::vector<CReadLineHistoryEntry>;
 
  public:
   CReadLine();
