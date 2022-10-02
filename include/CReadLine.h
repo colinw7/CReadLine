@@ -8,8 +8,8 @@ struct CReadLineHistoryEntry {
   int         line_num;
   std::string line;
 
-  CReadLineHistoryEntry(int line_num, const std::string &line) :
-   line_num(line_num), line(line) {
+  CReadLineHistoryEntry(int line_num1, const std::string &line1) :
+   line_num(line_num1), line(line1) {
   }
 };
 
