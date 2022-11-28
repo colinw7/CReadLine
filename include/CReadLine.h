@@ -31,7 +31,7 @@ class CReadLine {
 
   std::string readLineInterruptable();
 
-  void interrupt();
+  virtual void interrupt();
 
   void doInterrupt();
 
@@ -62,7 +62,7 @@ class CReadLine {
 
   void getHistoryEntries(HistoryEntries &entries);
 
-  void beep();
+  virtual void beep();
 
  private:
   static int rlCompleteLine(int count, int key);
@@ -83,9 +83,9 @@ class CReadLine {
 
   std::string prompt_;
   std::string name_;
-  bool        eof_         { false };
+  bool        eof_           { false };
   CHistoryP   history_;
-  bool        autoHistory_ { false };
+  bool        autoHistory_   { false };
   bool        interruptable_ { false };
 };
 
