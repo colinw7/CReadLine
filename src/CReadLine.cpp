@@ -138,15 +138,17 @@ int
 CReadLine::
 rlCompleteLine(int, int)
 {
+  // only complete at end of line
   if (rl_point != rl_end)
     return 0;
 
-  std::string line = current_->getBuffer();
+  auto line = current_->getBuffer();
 
-  std::string line1;
+  std::string completedLine;
 
-  if (current_->completeLine(line, line1))
-    current_->setBuffer(line + line1);
+  // complete line and return extra text
+  if (current_->completeLine(line, completedLine))
+    current_->setBuffer(line + completedLine);
 
   return 0;
 }
