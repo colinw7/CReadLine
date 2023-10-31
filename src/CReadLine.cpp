@@ -62,7 +62,7 @@ void
 CReadLine::
 disableTimeoutHook()
 {
-  rl_event_hook = 0;
+  rl_event_hook = nullptr;
 }
 
 std::string
